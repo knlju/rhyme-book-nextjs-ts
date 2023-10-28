@@ -1,60 +1,27 @@
-import {useState, useEffect} from 'react';
-import SuffixTrie from '@/utils/suffixTrie';
-import {RhymeFinder, SuffixTrieStrategy} from "@/utils/rhymeFinder";
+import {useState, ChangeEvent, FormEvent} from 'react';
+import {Rhyme} from "@/utils/rhymeFinder";
+import useGetTrie from "@/hooks/useGetTrie";
 
 // @TODO: add selection of different strategies for rhyme finding
 export default function Home() {
-  const [loadingFile, setLoadingFile] = useState(true);
-  const [buildingTrie, setBuildingTrie] = useState(false);
-  const [trieBuilt, setTrieBuilt] = useState(false);
-  const [trie, setTrie] = useState<SuffixTrie>(null);
   const [inputWord, setInputWord] = useState('');
-  const [matches, setMatches] = useState([]);
-  const [rhymeFinder, setRhymeFinder] = useState<RhymeFinder>(null);
+  const [matches, setMatches] = useState<Rhyme[]>([]);
 
-  useEffect(() => {
-    async function fetchDataAndBuildTrie() {
-      try {
-        const response = await fetch('/sr.dic.txt');
-        const data = await response.text();
+  const {error, trie, loading, rhymeFinder} = useGetTrie()
 
-        setLoadingFile(false);
-        setBuildingTrie(true);
-
-        const newTrie = new SuffixTrie();
-        const words = data.split('\n');
-        for (let word of words) {
-          newTrie.insert(word);
-        }
-
-        setTrie(newTrie);
-
-        setRhymeFinder(new RhymeFinder(new SuffixTrieStrategy(newTrie)));
-
-        setBuildingTrie(false);
-        setTrieBuilt(true);
-
-      } catch (error) {
-        console.error("Error fetching or processing data:", error);
-      }
-    }
-
-    fetchDataAndBuildTrie();
-  }, []);
-
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputWord(e.target.value);
   }
 
   const findMatches = () => {
-    if (!trie || !inputWord) return;
+    if (!trie || !inputWord || !rhymeFinder) return;
 
     const matches = rhymeFinder.findRhymes(inputWord)
 
     setMatches(matches);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     findMatches()
   }
@@ -62,9 +29,9 @@ export default function Home() {
 
   return (
     <>
-      {loadingFile && <p>Loading file...</p>}
-      {buildingTrie && <p>Building suffix trie...</p>}
-      {trieBuilt && (
+      {/*{error && <div>{error.message}</div>}*/}
+      {loading && <p>Loading file...</p>}
+      {trie && (
         <>
           <p>Suffix Trie built successfully!</p>
           <form onSubmit={handleSubmit}>
