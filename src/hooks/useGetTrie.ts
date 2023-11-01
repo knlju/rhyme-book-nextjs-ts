@@ -17,7 +17,8 @@ export default function useGetTrie() {
         const data = await response.text();
         const newTrie = new SuffixTrie();
         const words = data.split('\n');
-        for (const word of words) {
+        for (let i = 0; i < words.length; i += 1) {
+          const word = words[i];
           newTrie.insert(word);
         }
 

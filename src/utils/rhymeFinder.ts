@@ -22,9 +22,9 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
     let j = str2.length - 1;
     let count = 0;
     while (i >= 0 && j >= 0 && str1[i] === str2[j]) {
-      count++;
-      i--;
-      j--;
+      count += 1;
+      i -= 1;
+      j -= 1;
     }
     return count;
   };
@@ -53,7 +53,8 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
         );
       }
 
-      for (const char in node.children) {
+      for (let i = 0; i < node.children.length; i += 1) {
+        const char = node.children[i];
         if (char !== reversedWord[index]) {
           searchTrie(node.children[char], currentReversedWord + char, index);
         }

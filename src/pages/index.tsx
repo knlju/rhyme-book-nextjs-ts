@@ -40,7 +40,9 @@ function Home() {
               onChange={handleInputChange}
               placeholder="Enter a word..."
             />
-            <button onClick={findMatches}>Find Rhymes</button>
+            <button onClick={findMatches} type="submit">
+              Find Rhymes
+            </button>
           </form>
           <ul>
             {matches.map((match) => (
