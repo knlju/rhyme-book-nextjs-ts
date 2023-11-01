@@ -1,14 +1,16 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { type Rhyme } from '@utils/rhymeFinder';
 import useRhymeFinder, { RhymeType } from '@hooks/useRhymeFinder';
+import RhymeTypeSelect from '@components/RhymeTypeSelect';
 
-// @TODO: add selection of different strategies for rhyme finding
 function Home() {
   const [inputWord, setInputWord] = useState('');
   const [rhymeType, setRhymeType] = useState<RhymeType>('perfect');
   const [matches, setMatches] = useState<Rhyme[]>([]);
 
-  const { error, trie, loading, rhymeFinder } = useRhymeFinder({});
+  const { error, trie, loading, rhymeFinder, setRhymeStrategy } = useRhymeFinder({
+    strategyType: rhymeType
+  });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setInputWord(e.target.value);
@@ -29,8 +31,16 @@ function Home() {
 
   return (
     <>
+      <h1>Rhyme Book</h1>
       {error && <div>{error.message}</div>}
       {loading && <p>Loading file...</p>}
+      {!loading && (
+        <RhymeTypeSelect
+          rhymeType={rhymeType}
+          setRhymeType={setRhymeType}
+          setRhymeStrategy={setRhymeStrategy}
+        />
+      )}
       {trie && (
         <>
           <p>Suffix Trie built successfully!</p>

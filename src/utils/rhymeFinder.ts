@@ -6,7 +6,7 @@ export interface Rhyme {
   rhymeLength: number;
 }
 
-interface RhymeFindingStrategy {
+export interface RhymeFindingStrategy {
   findRhymes: (word: string) => Rhyme[];
   getRhymeStrength: (word: string, matchingWord: string) => number;
 }
@@ -157,7 +157,14 @@ export class RhymeFinder {
     this.strategy = strategy;
   }
 
+  getStrategy() {
+    return this.strategy;
+  }
+
   findRhymes(word: string): Rhyme[] {
+    console.log(word);
+    console.log('this.strategy');
+    console.log(this.strategy);
     return this.strategy.findRhymes(word);
   }
 }
