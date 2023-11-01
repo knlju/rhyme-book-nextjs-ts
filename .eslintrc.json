@@ -27,32 +27,32 @@
         "plugin:import/typescript",
         "prettier"
     ],
-    "rules": {
-        "react/jsx-filename-extension": [1, {
-            "extensions": [".ts", ".tsx"]
-        }],
-        "import/extensions": "off",
-        "react/prop-types": "off",
-        "jsx-a11y/anchor-is-valid": "off",
-        "react/jsx-props-no-spreading": ["error", {
-            "custom": "ignore"
-        }],
-        "react/react-in-jsx-scope": "off",
-        "prettier/prettier": "error",
-        "react/no-unescaped-entities": "off",
-        "import/no-cycle": [0, {
-            "ignoreExternal": true
-        }],
-        "prefer-const": "off",
-        "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["error", {
-            "functions": false,
-            "classes": false,
-            "variables": true
-        }],
-        "import/no-unresolved": "error",
-        "max-classes-per-file": "off"
-    },
+//    "rules": {
+//        "react/jsx-filename-extension": [1, {
+//            "extensions": [".ts", ".tsx"]
+//        }],
+//        "import/extensions": "off",
+//        "react/prop-types": "off",
+//        "jsx-a11y/anchor-is-valid": "off",
+//        "react/jsx-props-no-spreading": ["error", {
+//            "custom": "ignore"
+//        }],
+//        "react/react-in-jsx-scope": "off",
+//        "prettier/prettier": "error",
+//        "react/no-unescaped-entities": "off",
+//        "import/no-cycle": [0, {
+//            "ignoreExternal": true
+//        }],
+//        "prefer-const": "off",
+//        "no-use-before-define": "off",
+//        "@typescript-eslint/no-use-before-define": ["error", {
+//            "functions": false,
+//            "classes": false,
+//            "variables": true
+//        }],
+//        "import/no-unresolved": "error",
+//        "max-classes-per-file": "off"
+//    },
     "settings": {
         "import/resolver": {
             "babel-module": {
