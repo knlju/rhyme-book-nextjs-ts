@@ -1,8 +1,19 @@
 import SuffixTrie from '@utils/suffixTrie';
-import { RhymeFinder, SuffixTrieStrategy } from '@utils/rhymeFinder';
+import {
+  ImperfectRhymeStrategy,
+  RhymeFinder,
+  SuffixTrieStrategy,
+  VowelRhymeStrategy
+} from '@utils/rhymeFinder';
 import { useEffect, useState } from 'react';
 
-export default function useGetTrie() {
+export type RhymeType = 'vowel' | 'imperfect' | 'perfect';
+
+interface Options {
+  strategyType: RhymeType;
+}
+
+export default function useRhymeFinder(options: Options) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>();
   const [trie, setTrie] = useState<SuffixTrie>();
@@ -24,7 +35,7 @@ export default function useGetTrie() {
 
         setTrie(newTrie);
 
-        setRhymeFinder(new RhymeFinder(new SuffixTrieStrategy(newTrie)));
+        setRhymeFinder(new RhymeFinder(new ImperfectRhymeStrategy(newTrie)));
       } catch (err) {
         setError(err as Error);
       } finally {

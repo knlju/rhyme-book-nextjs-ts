@@ -8,6 +8,7 @@ export interface Rhyme {
 
 interface RhymeFindingStrategy {
   findRhymes: (word: string) => Rhyme[];
+  getRhymeStrength: (word: string, matchingWord: string) => number;
 }
 
 export class SuffixTrieStrategy implements RhymeFindingStrategy {
@@ -17,17 +18,19 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
     this.trie = trie;
   }
 
-  static getRhymeLength = (str1: string, str2: string): number => {
-    let i = str1.length - 1;
-    let j = str2.length - 1;
+  getRhymeStrength: (word: string, matchingWord: string) => number;
+
+  static getRhymeStrength(word: string, matchingWord: string): number {
+    let i = word.length - 1;
+    let j = matchingWord.length - 1;
     let count = 0;
-    while (i >= 0 && j >= 0 && str1[i] === str2[j]) {
+    while (i >= 0 && j >= 0 && word[i] === matchingWord[j]) {
       count += 1;
       i -= 1;
       j -= 1;
     }
     return count;
-  };
+  }
 
   findRhymes(word: string): Rhyme[] {
     const results: Rhyme[] = [];
@@ -39,7 +42,10 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
     const searchTrie = (node: Node, currentReversedWord: string, index: number) => {
       if (node.isEndOfWord) {
         const actualWord = currentReversedWord.split('').reverse().join('');
-        const rhymeValue = SuffixTrieStrategy.getRhymeLength(word, actualWord);
+        const rhymeValue = Object.getPrototypeOf(this).constructor.getRhymeStrength(
+          word,
+          actualWord
+        );
         if (rhymeValue > 0) {
           results.push({ rhyme: actualWord, rhymeLength: rhymeValue });
         }
@@ -53,8 +59,9 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
         );
       }
 
-      for (let i = 0; i < node.children.length; i += 1) {
-        const char = node.children[i];
+      const objKeys = Object.keys(node.children);
+      for (let i = 0; i < objKeys.length; i += 1) {
+        const char = objKeys[i];
         if (char !== reversedWord[index]) {
           searchTrie(node.children[char], currentReversedWord + char, index);
         }
@@ -66,6 +73,76 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
     results.sort((a, b) => b.rhymeLength - a.rhymeLength);
 
     return results.slice(0, 100);
+  }
+}
+
+export class VowelRhymeStrategy extends SuffixTrieStrategy {
+  getRhymeStrength: (word: string, matchingWord: string) => number;
+
+  static getRhymeStrength(str1: string, str2: string): number {
+    const vowels = 'АЕИОУаеиоу';
+
+    // Helper function to get vowels from a word
+    const extractVowels = (s: string) => s.split('').filter((char) => vowels.includes(char));
+
+    const vowels1 = extractVowels(str1);
+    const vowels2 = extractVowels(str2);
+
+    // Start from the last vowel and compare
+    let count = 0;
+    let i = vowels1.length - 1;
+    let j = vowels2.length - 1;
+
+    while (i >= 0 && j >= 0 && vowels1[i] === vowels2[j]) {
+      count += 1;
+      i -= 1;
+      j -= 1;
+    }
+
+    // If the last vowels don't match, return 0
+    if (i !== vowels1.length - 1 || j !== vowels2.length - 1) {
+      return count === 0 ? 0 : count - 1;
+    }
+
+    return count;
+  }
+}
+
+export class ImperfectRhymeStrategy extends SuffixTrieStrategy {
+  getRhymeStrength: (word: string, matchingWord: string) => number;
+
+  static getRhymeStrength(str1: string, str2: string): number {
+    const vowels = 'АЕИОУаеиоу';
+
+    const extractVowels = (s: string) => s.split('').filter((char) => vowels.includes(char));
+
+    const vowels1 = extractVowels(str1);
+    const vowels2 = extractVowels(str2);
+
+    // Start from the last vowel and compare
+    let count = 0;
+    let i = vowels1.length - 1;
+    let j = vowels2.length - 1;
+
+    while (i >= 0 && j >= 0 && vowels1[i] === vowels2[j]) {
+      count += 1;
+      i -= 1;
+      j -= 1;
+    }
+
+    // If the last vowels don't match, return 0
+    if (i !== vowels1.length - 1 || j !== vowels2.length - 1) {
+      return count === 0 ? 0 : count - 1;
+    }
+
+    // If the last two letters match unless the one of the words has one letter, return count
+    if (str1.length > 1 && str2.length > 1) {
+      if (str1[str1.length - 1] !== str2[str2.length - 1]) {
+        return 0;
+      }
+    }
+
+    return count;
   }
 }
 
