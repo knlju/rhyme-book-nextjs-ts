@@ -162,9 +162,6 @@ export class RhymeFinder {
   }
 
   findRhymes(word: string): Rhyme[] {
-    console.log(word);
-    console.log('this.strategy');
-    console.log(this.strategy);
     return this.strategy.findRhymes(word);
   }
 }
