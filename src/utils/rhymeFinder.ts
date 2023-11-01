@@ -1,13 +1,17 @@
-import SuffixTrie, {Node} from "@/utils/suffixTrie";
+import { type Node } from '@utils/suffixTrie';
+import type SuffixTrie from '@utils/suffixTrie';
 
-export type Rhyme = { rhyme: string; rhymeLength: number }
+export interface Rhyme {
+  rhyme: string;
+  rhymeLength: number;
+}
 
 interface RhymeFindingStrategy {
-  findRhymes(word: string): Rhyme[];
+  findRhymes: (word: string) => Rhyme[];
 }
 
 export class SuffixTrieStrategy implements RhymeFindingStrategy {
-  private trie: SuffixTrie
+  private readonly trie: SuffixTrie;
 
   constructor(trie: SuffixTrie) {
     this.trie = trie;
@@ -26,15 +30,15 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
   };
 
   findRhymes(word: string): Rhyme[] {
-    let results: Rhyme[] = [];
+    const results: Rhyme[] = [];
 
-    let currentNode = this.trie.root;
+    const currentNode = this.trie.root;
 
-    const reversedWord = word.split("").reverse().join("");
+    const reversedWord = word.split('').reverse().join('');
 
     const searchTrie = (node: Node, currentReversedWord: string, index: number) => {
       if (node.isEndOfWord) {
-        const actualWord = currentReversedWord.split("").reverse().join("");
+        const actualWord = currentReversedWord.split('').reverse().join('');
         const rhymeValue = SuffixTrieStrategy.getRhymeLength(word, actualWord);
         if (rhymeValue > 0) {
           results.push({ rhyme: actualWord, rhymeLength: rhymeValue });
@@ -42,7 +46,11 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
       }
 
       if (index < reversedWord.length && node.children[reversedWord[index]]) {
-        searchTrie(node.children[reversedWord[index]], currentReversedWord + reversedWord[index], index + 1);
+        searchTrie(
+          node.children[reversedWord[index]],
+          currentReversedWord + reversedWord[index],
+          index + 1
+        );
       }
 
       for (const char in node.children) {
@@ -50,10 +58,9 @@ export class SuffixTrieStrategy implements RhymeFindingStrategy {
           searchTrie(node.children[char], currentReversedWord + char, index);
         }
       }
-    }
+    };
 
-    searchTrie(currentNode, "", 0);
-
+    searchTrie(currentNode, '', 0);
 
     results.sort((a, b) => b.rhymeLength - a.rhymeLength);
 

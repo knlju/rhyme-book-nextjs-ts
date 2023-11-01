@@ -1,7 +1,6 @@
-import SuffixTrie from "@/utils/suffixTrie";
-import {RhymeFinder, SuffixTrieStrategy} from "@/utils/rhymeFinder";
-import {useEffect, useState} from "react";
-
+import SuffixTrie from '@utils/suffixTrie';
+import { RhymeFinder, SuffixTrieStrategy } from '@utils/rhymeFinder';
+import { useEffect, useState } from 'react';
 
 export default function useGetTrie() {
   const [loading, setLoading] = useState(false);
@@ -12,30 +11,28 @@ export default function useGetTrie() {
   useEffect(() => {
     async function fetchWordTxt() {
       try {
-        setError(null)
-        setLoading(true)
+        setError(null);
+        setLoading(true);
         const response = await fetch('/sr.dic.txt');
         const data = await response.text();
         const newTrie = new SuffixTrie();
         const words = data.split('\n');
-        for (let word of words) {
+        for (const word of words) {
           newTrie.insert(word);
         }
 
         setTrie(newTrie);
 
         setRhymeFinder(new RhymeFinder(new SuffixTrieStrategy(newTrie)));
-
       } catch (err) {
-        setError(err as Error)
+        setError(err as Error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchWordTxt()
-  }, [])
+    fetchWordTxt();
+  }, []);
 
-  return {trie, rhymeFinder, error, loading}
+  return { trie, rhymeFinder, error, loading };
 }
-
