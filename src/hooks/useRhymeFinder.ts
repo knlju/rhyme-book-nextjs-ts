@@ -7,6 +7,7 @@ import {
   VowelRhymeStrategy
 } from '@utils/rhymeFinder';
 import { useEffect, useState } from 'react';
+import { SerbianScript } from '@components/ScriptSelect';
 
 export type RhymeType = 'vowel' | 'imperfect' | 'perfect';
 
@@ -42,12 +43,16 @@ export default function useRhymeFinder(options: Options) {
     setRhymeStrategy();
   }, [options]);
 
-  useEffect(() => {
+  function fetchAndBuildTrie(script: SerbianScript) {
     async function fetchWordTxt() {
       try {
         setError(null);
         setLoading(true);
-        const response = await fetch('/sr.dic.txt');
+        const file =
+          script === 'latin'
+            ? 'https://raw.githubusercontent.com/turanjanin/spisak-srpskih-reci/master/serbian-words-latin.txt'
+            : '/sr.dic.txt';
+        const response = await fetch(file);
         const data = await response.text();
         const newTrie = new SuffixTrie();
         const words = data.split('\n');
@@ -71,7 +76,11 @@ export default function useRhymeFinder(options: Options) {
     }
 
     fetchWordTxt();
+  }
+
+  useEffect(() => {
+    fetchAndBuildTrie('cyrillic');
   }, []);
 
-  return { trie, rhymeFinder, error, loading, setRhymeStrategy };
+  return { trie, rhymeFinder, error, loading, setRhymeStrategy, fetchAndBuildTrie };
 }

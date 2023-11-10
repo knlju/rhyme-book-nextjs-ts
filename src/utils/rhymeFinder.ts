@@ -80,7 +80,8 @@ export class VowelRhymeStrategy extends SuffixTrieStrategy {
   getRhymeStrength: (word: string, matchingWord: string) => number;
 
   static getRhymeStrength(str1: string, str2: string): number {
-    const vowels = 'АЕИОУаеиоу';
+    // const vowels = 'АЕИОУаеиоу';
+    const vowels = 'AEIOUaeiou';
 
     // Helper function to get vowels from a word
     const extractVowels = (s: string) => s.split('').filter((char) => vowels.includes(char));
@@ -112,7 +113,8 @@ export class ImperfectRhymeStrategy extends SuffixTrieStrategy {
   getRhymeStrength: (word: string, matchingWord: string) => number;
 
   static getRhymeStrength(str1: string, str2: string): number {
-    const vowels = 'АЕИОУаеиоу';
+    // const vowels = 'АЕИОУаеиоу';
+    const vowels = 'AEIOUaeiou';
 
     const extractVowels = (s: string) => s.split('').filter((char) => vowels.includes(char));
 

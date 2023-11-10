@@ -7,7 +7,7 @@ export default function RhymeTypeSelect({ rhymeType, setRhymeType, setRhymeStrat
   };
 
   return (
-    <div>
+    <section>
       <span>Rhyme type:</span>
       <label htmlFor="perfect">
         <input
@@ -42,6 +42,6 @@ export default function RhymeTypeSelect({ rhymeType, setRhymeType, setRhymeStrat
         />
         Vowel Rhyme
       </label>
-    </div>
+    </section>
   );
 }
