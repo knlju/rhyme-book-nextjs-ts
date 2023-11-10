@@ -130,16 +130,23 @@ export class ImperfectRhymeStrategy extends SuffixTrieStrategy {
       j -= 1;
     }
 
-    // If the last vowels don't match, return 0
-    if (i !== vowels1.length - 1 || j !== vowels2.length - 1) {
-      return count === 0 ? 0 : count - 1;
+    const lastLetterEQ = str1[str1.length - 1] === str2[str2.length - 1];
+    if (!lastLetterEQ) {
+      return 0;
     }
 
     // If the last two letters match unless the one of the words has one letter, return count
     if (str1.length > 1 && str2.length > 1) {
-      if (str1[str1.length - 1] !== str2[str2.length - 1]) {
+      const secondToLastLetterEQ = str1[str1.length - 2] === str2[str2.length - 2];
+
+      if (!secondToLastLetterEQ) {
         return 0;
       }
+    }
+
+    // If the last vowels don't match, return 0
+    if (i !== vowels1.length - 1 || j !== vowels2.length - 1) {
+      return count === 0 ? 0 : count - 1;
     }
 
     return count;
